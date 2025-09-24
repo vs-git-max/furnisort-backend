@@ -19,10 +19,16 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://young-sam-furniture-workshop.vercel.app",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
+
+app.options("*", cors()); // enable preflight for all routes
 
 //using the functions
 app.use("/api/v1/auth", authRoutes);
