@@ -4,16 +4,23 @@ import User from "../../models/user.model.js";
 
 const signup = async (req, res) => {
   try {
-    const { password, name, email } = req.body;
+    const { password, username, email } = req.body;
 
     if (
-      [password, name, email].every((item) => !item || item.trim().length === 0)
+      [password, username, email].every(
+        (item) => !item || item.trim().length === 0
+      )
     ) {
       return res.json({
         message: "Add all input fields",
         success: false,
       });
     }
+
+    const isUser = await User.findOne({ email });
+
+    if (isUser)
+      return res.json({ message: "User with the email found", success: false });
 
     const validEmail = isEmailValid(email);
 
@@ -34,7 +41,7 @@ const signup = async (req, res) => {
     const hashedPassword = await hashPassword(password, 12);
 
     const newUser = new User({
-      name,
+      username,
       email,
       password: hashedPassword,
     });
